@@ -1,241 +1,527 @@
 "use client"
 
-import { useState } from "react"
+import React from "react"
+
+import { useState, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Camera, Filter } from "lucide-react"
+import { Camera, ArrowLeft, RotateCw } from "lucide-react"
 
-// Sample photo data - replace with your actual photos
-const samplePhotos = [
-  // Nature Photos
-  {
-    id: 1,
-    src: "/photos/nature/sunset-mountain.jpg",
-    alt: "Sunset over mountain range",
-    category: "nature",
-    title: "Mountain Sunset",
-  },
-  {
-    id: 2,
-    src: "/photos/nature/forest-path.png",
-    alt: "Peaceful forest walking path",
-    category: "nature",
-    title: "Forest Trail",
-  },
-  {
-    id: 3,
-    src: "/photos/nature/lake-reflection.jpeg",
-    alt: "Lake with mountain reflections",
-    category: "nature",
-    title: "Lake Reflection",
-  },
-
-  // Portrait Photos
-  {
-    id: 4,
-    src: "/photos/portraits/headshot-john.jpg",
-    alt: "Professional headshot",
-    category: "portraits",
-    title: "Professional Headshot",
-  },
-  {
-    id: 5,
-    src: "/photos/portraits/family-portrait.png",
-    alt: "Family portrait session",
-    category: "portraits",
-    title: "Family Portrait",
-  },
-  {
-    id: 6,
-    src: "/photos/portraits/graduation-photo.jpeg",
-    alt: "Graduation ceremony photo",
-    category: "portraits",
-    title: "Graduation Day",
-  },
-
-  // Event Photos
-  {
-    id: 7,
-    src: "/photos/events/wedding-ceremony.jpg",
-    alt: "Wedding ceremony moment",
-    category: "events",
-    title: "Wedding Ceremony",
-  },
-  {
-    id: 8,
-    src: "/photos/events/birthday-party.png",
-    alt: "Birthday celebration",
-    category: "events",
-    title: "Birthday Celebration",
-  },
-  {
-    id: 9,
-    src: "/photos/events/corporate-event.jpeg",
-    alt: "Corporate event photography",
-    category: "events",
-    title: "Corporate Event",
-  },
-
-  // Architecture Photos
-  {
-    id: 10,
-    src: "/photos/architecture/modern-building.jpg",
-    alt: "Modern architectural design",
-    category: "architecture",
-    title: "Modern Architecture",
-  },
-  {
-    id: 11,
-    src: "/photos/architecture/historic-bridge.png",
-    alt: "Historic bridge structure",
-    category: "architecture",
-    title: "Historic Bridge",
-  },
-  {
-    id: 12,
-    src: "/photos/architecture/city-skyline.jpeg",
-    alt: "City skyline at dusk",
-    category: "architecture",
-    title: "City Skyline",
-  },
-]
+// Photo data using your new file structure
+const photoData = {
+  places: [
+    {
+      id: 1,
+      src: "/photos/places/01.jpg",
+      alt: "Places photo 01",
+      title: "Location 01",
+    },
+    {
+      id: 2,
+      src: "/photos/places/02.jpg",
+      alt: "Places photo 02",
+      title: "Location 02",
+    },
+    {
+      id: 3,
+      src: "/photos/places/03.jpg",
+      alt: "Places photo 03",
+      title: "Location 03",
+    },
+    {
+      id: 4,
+      src: "/photos/places/04.jpg",
+      alt: "Places photo 04",
+      title: "Location 04",
+    },
+    {
+      id: 5,
+      src: "/photos/places/05.jpg",
+      alt: "Places photo 05",
+      title: "Location 05",
+    },
+    {
+      id: 6,
+      src: "/photos/places/06.jpg",
+      alt: "Places photo 06",
+      title: "Location 06",
+    },
+    {
+      id: 7,
+      src: "/photos/places/07.jpg",
+      alt: "Places photo 07",
+      title: "Location 07",
+    },
+    {
+      id: 8,
+      src: "/photos/places/08.jpg",
+      alt: "Places photo 08",
+      title: "Location 08",
+    },
+    {
+      id: 9,
+      src: "/photos/places/09.jpg",
+      alt: "Places photo 09",
+      title: "Location 09",
+    },
+    {
+      id: 10,
+      src: "/photos/places/10.jpg",
+      alt: "Places photo 10",
+      title: "Location 10",
+    },
+  ],
+  misc: [
+    {
+      id: 11,
+      src: "/photos/misc/A01.jpg",
+      alt: "Misc photo A01",
+      title: "Misc A01",
+    },
+    {
+      id: 12,
+      src: "/photos/misc/A02.jpg",
+      alt: "Misc photo A02",
+      title: "Misc A02",
+    },
+    {
+      id: 13,
+      src: "/photos/misc/A03.jpg",
+      alt: "Misc photo A03",
+      title: "Misc A03",
+    },
+    {
+      id: 14,
+      src: "/photos/misc/A04.jpg",
+      alt: "Misc photo A04",
+      title: "Misc A04",
+    },
+    {
+      id: 15,
+      src: "/photos/misc/A05.jpg",
+      alt: "Misc photo A05",
+      title: "Misc A05",
+    },
+    {
+      id: 16,
+      src: "/photos/misc/A06.jpg",
+      alt: "Misc photo A06",
+      title: "Misc A06",
+    },
+    {
+      id: 17,
+      src: "/photos/misc/A07.jpg",
+      alt: "Misc photo A07",
+      title: "Misc A07",
+    },
+    {
+      id: 18,
+      src: "/photos/misc/A08.jpg",
+      alt: "Misc photo A08",
+      title: "Misc A08",
+    },
+    {
+      id: 19,
+      src: "/photos/misc/A09.jpg",
+      alt: "Misc photo A09",
+      title: "Misc A09",
+    },
+    {
+      id: 20,
+      src: "/photos/misc/A10.jpg",
+      alt: "Misc photo A10",
+      title: "Misc A10",
+    },
+  ],
+}
 
 const categories = [
-  { id: "all", name: "All Photos", color: "purple" },
-  { id: "nature", name: "Nature", color: "green" },
-  { id: "portraits", name: "Portraits", color: "blue" },
-  { id: "events", name: "Events", color: "pink" },
-  { id: "architecture", name: "Architecture", color: "orange" },
+  { id: "places", name: "Places", description: "Locations and destinations" },
+  { id: "misc", name: "Misc", description: "Everything else" },
 ]
 
+type ViewState = "categories" | "loading" | "photos"
+type CategoryId = keyof typeof photoData
+
 export default function PhotoGallery() {
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedPhoto, setSelectedPhoto] = useState<(typeof samplePhotos)[0] | null>(null)
+  const [viewState, setViewState] = useState<ViewState>("categories")
+  const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(null)
+  const [selectedPhoto, setSelectedPhoto] = useState<any>(null)
+  const [wheelRotation, setWheelRotation] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const [lastAngle, setLastAngle] = useState(0)
+  const wheelRef = useRef<HTMLDivElement>(null)
 
-  const filteredPhotos =
-    selectedCategory === "all" ? samplePhotos : samplePhotos.filter((photo) => photo.category === selectedCategory)
-
-  const getCategoryColor = (categoryId: string) => {
-    const category = categories.find((cat) => cat.id === categoryId)
-    return category?.color || "purple"
+  const handleCategorySelect = (categoryId: CategoryId) => {
+    setSelectedCategory(categoryId)
+    setViewState("loading")
+    setWheelRotation(0)
   }
 
-  const getColorClasses = (color: string, isSelected: boolean) => {
-    const colorMap = {
-      purple: isSelected
-        ? "bg-purple-600 text-white border-purple-600"
-        : "border-purple-500 text-purple-400 hover:bg-purple-500/20",
-      green: isSelected
-        ? "bg-green-600 text-white border-green-600"
-        : "border-green-500 text-green-400 hover:bg-green-500/20",
-      blue: isSelected
-        ? "bg-blue-600 text-white border-blue-600"
-        : "border-blue-500 text-blue-400 hover:bg-blue-500/20",
-      pink: isSelected
-        ? "bg-pink-600 text-white border-pink-600"
-        : "border-pink-500 text-pink-400 hover:bg-pink-500/20",
-      orange: isSelected
-        ? "bg-orange-600 text-white border-orange-600"
-        : "border-orange-500 text-orange-400 hover:bg-orange-500/20",
-    }
-    return colorMap[color as keyof typeof colorMap] || colorMap.purple
+  const handleBackToCategories = () => {
+    setViewState("categories")
+    setSelectedCategory(null)
+    setWheelRotation(0)
   }
 
-  return (
-    <div className="space-y-8">
-      {/* Category Filter */}
-      <div className="flex flex-wrap justify-center gap-3">
-        {categories.map((category) => (
-          <Button
-            key={category.id}
-            onClick={() => setSelectedCategory(category.id)}
-            variant="outline"
-            className={`transition-all duration-300 ${getColorClasses(
-              category.color,
-              selectedCategory === category.id,
-            )}`}
-          >
-            <Filter className="h-4 w-4 mr-2" />
-            {category.name}
-          </Button>
-        ))}
-      </div>
+  // Calculate angle from center of wheel to mouse position
+  const getAngleFromCenter = useCallback((clientX: number, clientY: number) => {
+    if (!wheelRef.current) return 0
 
-      {/* Photo Count */}
-      <div className="text-center">
-        <p className="text-slate-400">
-          Showing {filteredPhotos.length} photo{filteredPhotos.length !== 1 ? "s" : ""}
-          {selectedCategory !== "all" && (
-            <span className="ml-1">
-              in{" "}
-              <span className="text-purple-400 font-medium">
-                {categories.find((cat) => cat.id === selectedCategory)?.name}
-              </span>
-            </span>
-          )}
-        </p>
-      </div>
+    const rect = wheelRef.current.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
 
-      {/* Photo Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredPhotos.map((photo) => (
-          <div
-            key={photo.id}
-            className="group relative bg-slate-900/50 border border-slate-600 rounded-xl overflow-hidden hover:border-purple-400 transition-all duration-300 cursor-pointer backdrop-blur-sm"
-            onClick={() => setSelectedPhoto(photo)}
-          >
-            <div className="aspect-[4/3] overflow-hidden">
-              <img
-                src={photo.src || "/placeholder.svg"}
-                alt={photo.alt}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-              <h3 className="font-semibold text-lg">{photo.title}</h3>
-              <p className="text-sm text-slate-300 capitalize">{photo.category}</p>
-            </div>
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <Camera className="h-5 w-5 text-white" />
-            </div>
-          </div>
-        ))}
-      </div>
+    const deltaX = clientX - centerX
+    const deltaY = clientY - centerY
 
-      {/* Empty State */}
-      {filteredPhotos.length === 0 && (
-        <div className="text-center py-12">
-          <Camera className="h-16 w-16 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-slate-400 mb-2">No photos found</h3>
-          <p className="text-slate-500">Try selecting a different category</p>
-        </div>
-      )}
+    return Math.atan2(deltaY, deltaX) * (180 / Math.PI)
+  }, [])
 
-      {/* Photo Modal */}
-      {selectedPhoto && (
-        <div
-          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedPhoto(null)}
-        >
-          <div className="relative max-w-4xl max-h-full">
-            <img
-              src={selectedPhoto.src || "/placeholder.svg"}
-              alt={selectedPhoto.alt}
-              className="max-w-full max-h-full object-contain rounded-lg"
-            />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
-              <h3 className="text-2xl font-bold text-white mb-2">{selectedPhoto.title}</h3>
-              <p className="text-slate-300 capitalize">{selectedPhoto.category}</p>
-            </div>
-            <button
-              onClick={() => setSelectedPhoto(null)}
-              className="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl font-bold"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      setIsDragging(true)
+      const angle = getAngleFromCenter(e.clientX, e.clientY)
+      setLastAngle(angle)
+    },
+    [getAngleFromCenter],
   )
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isDragging) return
+
+      const currentAngle = getAngleFromCenter(e.clientX, e.clientY)
+      let deltaAngle = currentAngle - lastAngle
+
+      // Handle angle wrap-around
+      if (deltaAngle > 180) deltaAngle -= 360
+      if (deltaAngle < -180) deltaAngle += 360
+
+      setWheelRotation((prev) => {
+        const newRotation = Math.max(0, Math.min(360, prev + deltaAngle))
+
+        // Check if we've reached 100% (360 degrees)
+        if (newRotation >= 360 && prev < 360) {
+          setTimeout(() => {
+            setViewState("photos")
+          }, 500)
+        }
+
+        return newRotation
+      })
+
+      setLastAngle(currentAngle)
+    },
+    [isDragging, lastAngle, getAngleFromCenter],
+  )
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false)
+  }, [])
+
+  // Touch events for mobile
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      const touch = e.touches[0]
+      setIsDragging(true)
+      const angle = getAngleFromCenter(touch.clientX, touch.clientY)
+      setLastAngle(angle)
+    },
+    [getAngleFromCenter],
+  )
+
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (!isDragging) return
+      e.preventDefault()
+
+      const touch = e.touches[0]
+      const currentAngle = getAngleFromCenter(touch.clientX, touch.clientY)
+      let deltaAngle = currentAngle - lastAngle
+
+      // Handle angle wrap-around
+      if (deltaAngle > 180) deltaAngle -= 360
+      if (deltaAngle < -180) deltaAngle += 360
+
+      setWheelRotation((prev) => {
+        const newRotation = Math.max(0, Math.min(360, prev + deltaAngle))
+
+        // Check if we've reached 100% (360 degrees)
+        if (newRotation >= 360 && prev < 360) {
+          setTimeout(() => {
+            setViewState("photos")
+          }, 500)
+        }
+
+        return newRotation
+      })
+
+      setLastAngle(currentAngle)
+    },
+    [isDragging, lastAngle, getAngleFromCenter],
+  )
+
+  // Add event listeners
+  React.useEffect(() => {
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove)
+      document.addEventListener("mouseup", handleMouseUp)
+      document.addEventListener("touchmove", handleTouchMove, { passive: false })
+      document.addEventListener("touchend", handleMouseUp)
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove)
+      document.removeEventListener("mouseup", handleMouseUp)
+      document.removeEventListener("touchmove", handleTouchMove)
+      document.removeEventListener("touchend", handleMouseUp)
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove])
+
+  const progress = (wheelRotation / 360) * 100
+
+  // Category Selection View - Minimalistic
+  if (viewState === "categories") {
+    return (
+      <div className="space-y-12">
+        <div className="text-center mb-16">
+          <h3 className="text-3xl font-light mb-4 text-white">Select Collection</h3>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-8 max-w-2xl mx-auto">
+          {categories.map((category) => (
+            <div
+              key={category.id}
+              className="flex-1 group relative bg-slate-900/30 border border-slate-700/50 rounded-lg overflow-hidden hover:border-slate-500 transition-all duration-500 backdrop-blur-sm"
+            >
+              <div className="p-12 text-center">
+                <h4 className="text-2xl font-light text-white mb-3">{category.name}</h4>
+                <p className="text-slate-400 mb-8 text-sm">{category.description}</p>
+                <p className="text-xs text-slate-500 mb-8">{photoData[category.id as CategoryId].length} items</p>
+                <Button
+                  onClick={() => handleCategorySelect(category.id as CategoryId)}
+                  variant="outline"
+                  className="border-slate-600 text-slate-300 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300"
+                >
+                  View
+                </Button>
+              </div>
+
+              {/* Subtle hover effect */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-800/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  // Loading View with Interactive Wheel
+  if (viewState === "loading" && selectedCategory) {
+    const category = categories.find((cat) => cat.id === selectedCategory)
+    const cometAngle = wheelRotation - 90 // Start from top
+    const radius = 140
+    const cometX = Math.cos((cometAngle * Math.PI) / 180) * radius
+    const cometY = Math.sin((cometAngle * Math.PI) / 180) * radius
+
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[500px] space-y-12">
+        <div className="text-center mb-8">
+          <h3 className="text-2xl font-light mb-2 text-white">Loading {category?.name}</h3>
+          <p className="text-slate-400 text-sm mb-4">Turn the wheel to load photos</p>
+          <div className="flex items-center justify-center gap-2 text-slate-500">
+            <RotateCw className="h-4 w-4" />
+            <span className="text-xs">Click and drag to rotate</span>
+          </div>
+        </div>
+
+        {/* Interactive Wheel */}
+        <div className="relative">
+          <div
+            ref={wheelRef}
+            className={`relative w-80 h-80 rounded-full border-4 border-slate-700/50 bg-slate-900/30 backdrop-blur-sm cursor-grab ${
+              isDragging ? "cursor-grabbing" : ""
+            } select-none`}
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+            style={{ transform: `rotate(${wheelRotation}deg)` }}
+          >
+            {/* Wheel Progress Fill */}
+            <div
+              className="absolute inset-1 rounded-full bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20"
+              style={{
+                background: `conic-gradient(from 0deg, 
+                  rgba(59, 130, 246, 0.3) 0deg, 
+                  rgba(147, 51, 234, 0.3) ${wheelRotation}deg, 
+                  transparent ${wheelRotation}deg, 
+                  transparent 360deg)`,
+              }}
+            />
+
+            {/* Wheel Notches */}
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-6 bg-slate-600 rounded-full"
+                style={{
+                  top: "10px",
+                  left: "50%",
+                  transformOrigin: "50% 150px",
+                  transform: `translateX(-50%) rotate(${i * 30}deg)`,
+                }}
+              />
+            ))}
+
+            {/* Center Hub */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-slate-800 rounded-full border-2 border-slate-600 flex items-center justify-center">
+              <div className="w-8 h-8 bg-slate-700 rounded-full"></div>
+            </div>
+          </div>
+
+          {/* Comet following the wheel */}
+          <div
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            style={{
+              transform: `translate(-50%, -50%) translate(${cometX}px, ${cometY}px)`,
+            }}
+          >
+            <div className="relative">
+              {/* Comet Head */}
+              <div className="w-6 h-6 bg-gradient-to-r from-white via-blue-200 to-purple-200 rounded-full shadow-lg shadow-blue-400/50"></div>
+
+              {/* Comet Tail */}
+              <div
+                className="absolute top-1/2 w-16 h-1 bg-gradient-to-r from-white/80 via-blue-300/60 to-transparent rounded-full"
+                style={{
+                  left: "-16px",
+                  transform: `translateY(-50%) rotate(${cometAngle + 180}deg)`,
+                  transformOrigin: "16px 50%",
+                }}
+              ></div>
+              <div
+                className="absolute top-1/2 w-12 h-0.5 bg-gradient-to-r from-blue-200/70 via-purple-300/50 to-transparent rounded-full"
+                style={{
+                  left: "-12px",
+                  transform: `translateY(-50%) rotate(${cometAngle + 180}deg)`,
+                  transformOrigin: "12px 50%",
+                }}
+              ></div>
+
+              {/* Comet Particles */}
+              {progress > 10 && (
+                <>
+                  <div
+                    className="absolute w-1 h-1 bg-blue-300 rounded-full animate-pulse"
+                    style={{ left: "-8px", top: "4px" }}
+                  ></div>
+                  <div
+                    className="absolute w-0.5 h-0.5 bg-purple-300 rounded-full animate-pulse"
+                    style={{ left: "-12px", top: "8px", animationDelay: "0.5s" }}
+                  ></div>
+                  <div
+                    className="absolute w-0.5 h-0.5 bg-white rounded-full animate-pulse"
+                    style={{ left: "-16px", top: "6px", animationDelay: "1s" }}
+                  ></div>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Progress Indicator */}
+          <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
+            <div className="text-3xl font-light text-white mb-2">{Math.round(progress)}%</div>
+            <div className="text-slate-400 text-sm">
+              {progress < 25 && "Keep turning..."}
+              {progress >= 25 && progress < 50 && "Getting there..."}
+              {progress >= 50 && progress < 75 && "Almost halfway..."}
+              {progress >= 75 && progress < 95 && "Nearly complete..."}
+              {progress >= 95 && progress < 100 && "So close..."}
+              {progress >= 100 && "Loading complete! 🌟"}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Photos View
+  if (viewState === "photos" && selectedCategory) {
+    const photos = photoData[selectedCategory]
+    const category = categories.find((cat) => cat.id === selectedCategory)
+
+    return (
+      <div className="space-y-8">
+        {/* Header with Back Button */}
+        <div className="flex items-center justify-between">
+          <Button
+            onClick={handleBackToCategories}
+            variant="outline"
+            className="border-slate-600 text-slate-300 hover:bg-slate-800"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+          <div className="text-center">
+            <h3 className="text-2xl font-light text-white">{category?.name}</h3>
+            <p className="text-slate-400 text-sm">{photos.length} items</p>
+          </div>
+          <div className="w-20"></div> {/* Spacer for centering */}
+        </div>
+
+        {/* Photo Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {photos.map((photo) => (
+            <div
+              key={photo.id}
+              className="group relative bg-slate-900/30 border border-slate-700/50 rounded-lg overflow-hidden hover:border-slate-500 transition-all duration-300 cursor-pointer backdrop-blur-sm"
+              onClick={() => setSelectedPhoto(photo)}
+            >
+              <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src={photo.src || "/placeholder.svg"}
+                  alt={photo.alt}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <h3 className="font-light text-lg">{photo.title}</h3>
+              </div>
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Camera className="h-4 w-4 text-white" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Photo Modal */}
+        {selectedPhoto && (
+          <div
+            className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
+            onClick={() => setSelectedPhoto(null)}
+          >
+            <div className="relative max-w-4xl max-h-full">
+              <img
+                src={selectedPhoto.src || "/placeholder.svg"}
+                alt={selectedPhoto.alt}
+                className="max-w-full max-h-full object-contain rounded-lg"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
+                <h3 className="text-xl font-light text-white mb-2">{selectedPhoto.title}</h3>
+                <p className="text-slate-300 text-sm capitalize">{selectedCategory}</p>
+              </div>
+              <button
+                onClick={() => setSelectedPhoto(null)}
+                className="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl font-light"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  return null
 }
