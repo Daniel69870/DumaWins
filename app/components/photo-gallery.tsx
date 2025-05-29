@@ -13,61 +13,31 @@ const photoData = {
       id: 1,
       src: "/photos/places/01.jpg",
       alt: "Places photo 01",
-      title: "Location 01",
+      title: "Mountain Landscape",
     },
     {
       id: 2,
       src: "/photos/places/02.jpg",
       alt: "Places photo 02",
-      title: "Location 02",
+      title: "Forest Trail",
     },
     {
       id: 3,
       src: "/photos/places/03.jpg",
       alt: "Places photo 03",
-      title: "Location 03",
+      title: "Desert Vista",
     },
     {
       id: 4,
       src: "/photos/places/04.jpg",
       alt: "Places photo 04",
-      title: "Location 04",
+      title: "Ocean View",
     },
     {
       id: 5,
       src: "/photos/places/05.jpg",
       alt: "Places photo 05",
-      title: "Location 05",
-    },
-    {
-      id: 6,
-      src: "/photos/places/06.jpg",
-      alt: "Places photo 06",
-      title: "Location 06",
-    },
-    {
-      id: 7,
-      src: "/photos/places/07.jpg",
-      alt: "Places photo 07",
-      title: "Location 07",
-    },
-    {
-      id: 8,
-      src: "/photos/places/08.jpg",
-      alt: "Places photo 08",
-      title: "Location 08",
-    },
-    {
-      id: 9,
-      src: "/photos/places/09.jpg",
-      alt: "Places photo 09",
-      title: "Location 09",
-    },
-    {
-      id: 10,
-      src: "/photos/places/10.jpg",
-      alt: "Places photo 10",
-      title: "Location 10",
+      title: "City Skyline",
     },
   ],
   misc: [
@@ -75,61 +45,31 @@ const photoData = {
       id: 11,
       src: "/photos/misc/A01.jpg",
       alt: "Misc photo A01",
-      title: "Misc A01",
+      title: "Abstract Art",
     },
     {
       id: 12,
       src: "/photos/misc/A02.jpg",
       alt: "Misc photo A02",
-      title: "Misc A02",
+      title: "Vintage Camera",
     },
     {
       id: 13,
       src: "/photos/misc/A03.jpg",
       alt: "Misc photo A03",
-      title: "Misc A03",
+      title: "Coffee & Books",
     },
     {
       id: 14,
       src: "/photos/misc/A04.jpg",
       alt: "Misc photo A04",
-      title: "Misc A04",
+      title: "Street Art",
     },
     {
       id: 15,
       src: "/photos/misc/A05.jpg",
       alt: "Misc photo A05",
-      title: "Misc A05",
-    },
-    {
-      id: 16,
-      src: "/photos/misc/A06.jpg",
-      alt: "Misc photo A06",
-      title: "Misc A06",
-    },
-    {
-      id: 17,
-      src: "/photos/misc/A07.jpg",
-      alt: "Misc photo A07",
-      title: "Misc A07",
-    },
-    {
-      id: 18,
-      src: "/photos/misc/A08.jpg",
-      alt: "Misc photo A08",
-      title: "Misc A08",
-    },
-    {
-      id: 19,
-      src: "/photos/misc/A09.jpg",
-      alt: "Misc photo A09",
-      title: "Misc A09",
-    },
-    {
-      id: 20,
-      src: "/photos/misc/A10.jpg",
-      alt: "Misc photo A10",
-      title: "Misc A10",
+      title: "Minimalist Design",
     },
   ],
 }
@@ -280,7 +220,7 @@ export default function PhotoGallery() {
 
   const progress = (wheelRotation / 360) * 100
 
-  // Category Selection View - Minimalistic
+  // Category Selection View - Minimalistic with FIXED BUTTON STYLING
   if (viewState === "categories") {
     return (
       <div className="space-y-12">
@@ -300,8 +240,7 @@ export default function PhotoGallery() {
                 <p className="text-xs text-slate-500 mb-8">{photoData[category.id as CategoryId].length} items</p>
                 <Button
                   onClick={() => handleCategorySelect(category.id as CategoryId)}
-                  variant="outline"
-                  className="border-slate-600 text-slate-300 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300"
+                  className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 hover:border-slate-500 transition-all duration-300"
                 >
                   View
                 </Button>
@@ -451,12 +390,11 @@ export default function PhotoGallery() {
 
     return (
       <div className="space-y-8">
-        {/* Header with Back Button */}
+        {/* Header with Back Button - IMPROVED CONTRAST */}
         <div className="flex items-center justify-between">
           <Button
             onClick={handleBackToCategories}
-            variant="outline"
-            className="border-slate-600 text-slate-300 hover:bg-slate-800"
+            className="bg-slate-700 hover:bg-slate-600 text-white border-none shadow-md"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
@@ -481,6 +419,10 @@ export default function PhotoGallery() {
                   src={photo.src || "/placeholder.svg"}
                   alt={photo.alt}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => {
+                    console.error(`Failed to load image: ${photo.src}`)
+                    e.currentTarget.src = "/placeholder.svg"
+                  }}
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -511,8 +453,11 @@ export default function PhotoGallery() {
                 <p className="text-slate-300 text-sm capitalize">{selectedCategory}</p>
               </div>
               <button
-                onClick={() => setSelectedPhoto(null)}
-                className="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl font-light"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedPhoto(null)
+                }}
+                className="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl font-light bg-black/50 w-8 h-8 rounded-full flex items-center justify-center"
               >
                 ×
               </button>
