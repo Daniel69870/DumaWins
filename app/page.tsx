@@ -2,7 +2,9 @@
 
 import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Rocket, Satellite, Globe, Zap, Star } from "lucide-react"
+import { Rocket, Camera, Globe, Gamepad2 } from "lucide-react"
+import SnakeGame from "./components/snake-game"
+import PhotoGallery from "./components/photo-gallery"
 
 export default function Home() {
   // Function to handle navigation
@@ -84,21 +86,21 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <Rocket className="h-6 w-6 text-purple-400 animate-pulse" />
             <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
-              SpaceUI
+              DUMA
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <button
-              onClick={() => scrollToSection("features")}
+              onClick={() => scrollToSection("game")}
               className="text-sm text-slate-300 hover:text-purple-400 transition-colors"
             >
-              Features
+              Game
             </button>
             <button
-              onClick={() => scrollToSection("showcase")}
+              onClick={() => scrollToSection("gallery")}
               className="text-sm text-slate-300 hover:text-purple-400 transition-colors"
             >
-              Showcase
+              Gallery
             </button>
             <button
               onClick={() => scrollToSection("contact")}
@@ -147,7 +149,7 @@ export default function Home() {
             <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-5 h-2.5 rounded-full bg-white/50"></div>
           </div>
 
-          {/* Ring 1 - Features Button (Closest orbit) */}
+          {/* Ring 1 - Game Button (Closest orbit) */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-80 md:h-80 pointer-events-none">
             {/* Ring Visual */}
             <div className="absolute inset-0 border border-purple-400/40 rounded-full"></div>
@@ -160,11 +162,11 @@ export default function Home() {
                 {/* Counter-rotation to keep button upright */}
                 <div className="animate-reverse-spin-slow">
                   <Button
-                    onClick={() => scrollToSection("features")}
+                    onClick={() => scrollToSection("game")}
                     className="relative bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 border border-purple-400 shadow-lg shadow-purple-500/50 group cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-purple-500/70 active:scale-95"
                   >
-                    <Zap className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                    Features
+                    <Gamepad2 className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
+                    Game
                   </Button>
                 </div>
               </div>
@@ -179,7 +181,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Ring 2 - Showcase Button (Middle orbit) */}
+          {/* Ring 2 - Gallery Button (Middle orbit) */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-96 md:h-96 pointer-events-none">
             {/* Ring Visual */}
             <div className="absolute inset-0 border border-blue-400/40 rounded-full"></div>
@@ -192,11 +194,11 @@ export default function Home() {
                 {/* Counter-rotation to keep button upright */}
                 <div className="animate-spin-slow">
                   <Button
-                    onClick={() => scrollToSection("showcase")}
+                    onClick={() => scrollToSection("gallery")}
                     className="relative bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 border border-blue-400 shadow-lg shadow-blue-500/50 group cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-blue-500/70 active:scale-95"
                   >
-                    <Satellite className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                    Showcase
+                    <Camera className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
+                    Gallery
                   </Button>
                 </div>
               </div>
@@ -274,81 +276,43 @@ export default function Home() {
         {/* Title and Description */}
         <div className="absolute top-32 left-1/2 transform -translate-x-1/2 text-center z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
-            Planetary Navigation
+            Welcome to DUMA
           </h1>
           <p className="text-slate-300 max-w-md mx-auto">
-            Navigate through the cosmos with our orbital interface system
+            Explore our interactive platform with games, galleries, and more
           </p>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 px-4 relative scroll-mt-20">
+      {/* Game Section */}
+      <section id="game" className="py-20 px-4 relative scroll-mt-20">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
-              Cosmic Features
+              Snake Game
             </h2>
             <p className="text-slate-300 max-w-2xl mx-auto">
-              Discover the powerful features that make our space UI truly out of this world.
+              Navigate your snake and collect energy orbs to grow and increase your score!
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { icon: Rocket, title: "Rocket Speed", desc: "Lightning fast performance across the galaxy" },
-              { icon: Satellite, title: "Satellite Network", desc: "Connected across multiple star systems" },
-              { icon: Star, title: "Stellar Design", desc: "Beautiful interfaces that shine like stars" },
-            ].map((feature, i) => (
-              <div
-                key={i}
-                className="bg-slate-900/50 border border-purple-500/30 rounded-xl p-6 hover:border-purple-400 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 backdrop-blur-sm"
-              >
-                <div className="h-12 w-12 rounded-lg bg-purple-500/20 flex items-center justify-center mb-4">
-                  <feature.icon className="h-6 w-6 text-purple-400" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-slate-400">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
+          <SnakeGame />
         </div>
       </section>
 
-      {/* Showcase Section */}
-      <section id="showcase" className="py-20 px-4 relative scroll-mt-20">
+      {/* Gallery Section */}
+      <section id="gallery" className="py-20 px-4 relative scroll-mt-20">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-              Galactic Showcase
+              Photo Gallery
             </h2>
-            <p className="text-slate-300 max-w-2xl mx-auto">Explore our space missions and cosmic achievements.</p>
+            <p className="text-slate-300 max-w-2xl mx-auto">
+              Browse through our collection of photos organized by categories.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[1, 2, 3, 4].map((item) => (
-              <div
-                key={item}
-                className="bg-slate-900/50 border border-blue-500/30 rounded-xl overflow-hidden hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 backdrop-blur-sm"
-              >
-                <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center relative">
-                  <Satellite className="h-12 w-12 text-blue-400 animate-pulse" />
-                  <div className="absolute top-4 right-4 w-2 h-2 bg-white rounded-full animate-ping"></div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">Mission {item}</h3>
-                  <p className="text-slate-400 mb-4">Exploring the far reaches of space with advanced technology.</p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white"
-                  >
-                    Launch Mission
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <PhotoGallery />
         </div>
       </section>
 
@@ -357,16 +321,18 @@ export default function Home() {
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400">
-              Contact Mission Control
+              Contact
             </h2>
-            <p className="text-slate-300 max-w-2xl mx-auto">Send us a transmission from anywhere in the universe.</p>
+            <p className="text-slate-300 max-w-2xl mx-auto">
+              Get in touch with us for any inquiries or collaborations.
+            </p>
           </div>
 
           <div className="max-w-md mx-auto bg-slate-900/50 border border-pink-500/30 rounded-xl p-6 backdrop-blur-sm">
             <form className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-1">
-                  Commander Name
+                  Name
                 </label>
                 <input
                   type="text"
@@ -376,7 +342,7 @@ export default function Home() {
               </div>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1">
-                  Space Frequency
+                  Email
                 </label>
                 <input
                   type="email"
@@ -386,7 +352,7 @@ export default function Home() {
               </div>
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-1">
-                  Transmission
+                  Message
                 </label>
                 <textarea
                   id="message"
@@ -395,8 +361,7 @@ export default function Home() {
                 ></textarea>
               </div>
               <Button className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500">
-                <Rocket className="h-4 w-4 mr-2" />
-                Send Transmission
+                Send Message
               </Button>
             </form>
           </div>
@@ -410,11 +375,11 @@ export default function Home() {
             <div className="flex items-center gap-2 mb-4 md:mb-0">
               <Rocket className="h-5 w-5 text-purple-400" />
               <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
-                SpaceUI
+                DUMA
               </span>
             </div>
             <div className="text-center text-sm text-slate-500">
-              © {new Date().getFullYear()} SpaceUI. Exploring the cosmos since 2024.
+              © {new Date().getFullYear()} DUMA. All rights reserved.
             </div>
           </div>
         </div>
