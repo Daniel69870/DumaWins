@@ -6,70 +6,70 @@ import { useState, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Camera, ArrowLeft, RotateCw } from "lucide-react"
 
-// Photo data using your new file structure
+// Photo data with minimal info - no descriptive text
 const photoData = {
   places: [
     {
       id: 1,
-      src: "/photos/places/01.jpg",
-      alt: "Places photo 01",
-      title: "Mountain Landscape",
+      src: "/photos/places/01.png",
+      alt: "Photo 01",
+      title: "01",
     },
     {
       id: 2,
       src: "/photos/places/02.jpg",
-      alt: "Places photo 02",
-      title: "Forest Trail",
+      alt: "Photo 02",
+      title: "02",
     },
     {
       id: 3,
-      src: "/photos/places/03.jpg",
-      alt: "Places photo 03",
-      title: "Desert Vista",
+      src: "/photos/places/03.png",
+      alt: "Photo 03",
+      title: "03",
     },
     {
       id: 4,
       src: "/photos/places/04.jpg",
-      alt: "Places photo 04",
-      title: "Ocean View",
+      alt: "Photo 04",
+      title: "04",
     },
     {
       id: 5,
-      src: "/photos/places/05.jpg",
-      alt: "Places photo 05",
-      title: "City Skyline",
+      src: "/photos/places/05.png",
+      alt: "Photo 05",
+      title: "05",
     },
   ],
   misc: [
     {
       id: 11,
       src: "/photos/misc/A01.jpg",
-      alt: "Misc photo A01",
-      title: "Abstract Art",
+      alt: "Photo A01",
+      title: "A01",
     },
     {
       id: 12,
-      src: "/photos/misc/A02.jpg",
-      alt: "Misc photo A02",
-      title: "Vintage Camera",
+      src: "/photos/misc/A02.png",
+      alt: "Photo A02",
+      title: "A02",
     },
     {
       id: 13,
       src: "/photos/misc/A03.jpg",
-      alt: "Misc photo A03",
-      title: "Coffee & Books",
+      alt: "Photo A03",
+      title: "A03",
     },
     {
       id: 14,
-      src: "/photos/misc/A04.jpg",
-      alt: "Misc photo A04",
-      title: "Street Art",
+      src: "/photos/misc/A04.png",
+      alt: "Photo A04",
+      title: "A04",
     },
     {
       id: 15,
       src: "/photos/misc/A05.jpg",
-      alt: "Misc photo A05",
-      title: "Minimalist Design",
+      alt: "Photo A05",
+      title: "A05",
     },
   ],
 }
@@ -81,6 +81,11 @@ const categories = [
 
 type ViewState = "categories" | "loading" | "photos"
 type CategoryId = keyof typeof photoData
+
+// Helper function to get file extension
+const getFileExtension = (filename: string): string => {
+  return filename.substring(filename.lastIndexOf(".") + 1).toUpperCase()
+}
 
 export default function PhotoGallery() {
   const [viewState, setViewState] = useState<ViewState>("categories")
@@ -220,34 +225,35 @@ export default function PhotoGallery() {
 
   const progress = (wheelRotation / 360) * 100
 
-  // Category Selection View - Minimalistic with FIXED BUTTON STYLING
+  // Category Selection View
   if (viewState === "categories") {
     return (
       <div className="space-y-12">
         <div className="text-center mb-16">
           <h3 className="text-3xl font-light mb-4 text-white">Select Collection</h3>
+          <p className="text-gray-400 text-sm">Supports JPG, PNG, WEBP, GIF, and BMP formats</p>
         </div>
 
         <div className="flex flex-col md:flex-row gap-8 max-w-2xl mx-auto">
           {categories.map((category) => (
             <div
               key={category.id}
-              className="flex-1 group relative bg-slate-900/30 border border-slate-700/50 rounded-lg overflow-hidden hover:border-slate-500 transition-all duration-500 backdrop-blur-sm"
+              className="flex-1 group relative bg-black/30 border border-gray-700/50 rounded-lg overflow-hidden hover:border-red-500/50 transition-all duration-500 backdrop-blur-sm"
             >
               <div className="p-12 text-center">
                 <h4 className="text-2xl font-light text-white mb-3">{category.name}</h4>
-                <p className="text-slate-400 mb-8 text-sm">{category.description}</p>
-                <p className="text-xs text-slate-500 mb-8">{photoData[category.id as CategoryId].length} items</p>
+                <p className="text-gray-400 mb-8 text-sm">{category.description}</p>
+                <p className="text-xs text-gray-500 mb-8">{photoData[category.id as CategoryId].length} items</p>
                 <Button
                   onClick={() => handleCategorySelect(category.id as CategoryId)}
-                  className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 hover:border-slate-500 transition-all duration-300"
+                  className="bg-red-900 hover:bg-red-800 text-white border border-red-700 hover:border-red-600 transition-all duration-300"
                 >
                   View
                 </Button>
               </div>
 
               {/* Subtle hover effect */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-800/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-red-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             </div>
           ))}
         </div>
@@ -267,8 +273,8 @@ export default function PhotoGallery() {
       <div className="flex flex-col items-center justify-center min-h-[500px] space-y-12">
         <div className="text-center mb-8">
           <h3 className="text-2xl font-light mb-2 text-white">Loading {category?.name}</h3>
-          <p className="text-slate-400 text-sm mb-4">Turn the wheel to load photos</p>
-          <div className="flex items-center justify-center gap-2 text-slate-500">
+          <p className="text-gray-400 text-sm mb-4">Turn the wheel to load photos</p>
+          <div className="flex items-center justify-center gap-2 text-gray-500">
             <RotateCw className="h-4 w-4" />
             <span className="text-xs">Click and drag to rotate</span>
           </div>
@@ -278,7 +284,7 @@ export default function PhotoGallery() {
         <div className="relative">
           <div
             ref={wheelRef}
-            className={`relative w-80 h-80 rounded-full border-4 border-slate-700/50 bg-slate-900/30 backdrop-blur-sm cursor-grab ${
+            className={`relative w-80 h-80 rounded-full border-4 border-gray-700/50 bg-black/30 backdrop-blur-sm cursor-grab ${
               isDragging ? "cursor-grabbing" : ""
             } select-none`}
             onMouseDown={handleMouseDown}
@@ -287,11 +293,11 @@ export default function PhotoGallery() {
           >
             {/* Wheel Progress Fill */}
             <div
-              className="absolute inset-1 rounded-full bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20"
+              className="absolute inset-1 rounded-full"
               style={{
                 background: `conic-gradient(from 0deg, 
-                  rgba(59, 130, 246, 0.3) 0deg, 
-                  rgba(147, 51, 234, 0.3) ${wheelRotation}deg, 
+                  rgba(220, 38, 38, 0.3) 0deg, 
+                  rgba(153, 27, 27, 0.3) ${wheelRotation}deg, 
                   transparent ${wheelRotation}deg, 
                   transparent 360deg)`,
               }}
@@ -301,7 +307,7 @@ export default function PhotoGallery() {
             {Array.from({ length: 12 }).map((_, i) => (
               <div
                 key={i}
-                className="absolute w-1 h-6 bg-slate-600 rounded-full"
+                className="absolute w-1 h-6 bg-gray-600 rounded-full"
                 style={{
                   top: "10px",
                   left: "50%",
@@ -312,8 +318,8 @@ export default function PhotoGallery() {
             ))}
 
             {/* Center Hub */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-slate-800 rounded-full border-2 border-slate-600 flex items-center justify-center">
-              <div className="w-8 h-8 bg-slate-700 rounded-full"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gray-800 rounded-full border-2 border-gray-600 flex items-center justify-center">
+              <div className="w-8 h-8 bg-gray-700 rounded-full"></div>
             </div>
           </div>
 
@@ -326,11 +332,11 @@ export default function PhotoGallery() {
           >
             <div className="relative">
               {/* Comet Head */}
-              <div className="w-6 h-6 bg-gradient-to-r from-white via-blue-200 to-purple-200 rounded-full shadow-lg shadow-blue-400/50"></div>
+              <div className="w-6 h-6 bg-gradient-to-r from-white via-red-200 to-red-300 rounded-full shadow-lg shadow-red-400/50"></div>
 
               {/* Comet Tail */}
               <div
-                className="absolute top-1/2 w-16 h-1 bg-gradient-to-r from-white/80 via-blue-300/60 to-transparent rounded-full"
+                className="absolute top-1/2 w-16 h-1 bg-gradient-to-r from-white/80 via-red-300/60 to-transparent rounded-full"
                 style={{
                   left: "-16px",
                   transform: `translateY(-50%) rotate(${cometAngle + 180}deg)`,
@@ -338,7 +344,7 @@ export default function PhotoGallery() {
                 }}
               ></div>
               <div
-                className="absolute top-1/2 w-12 h-0.5 bg-gradient-to-r from-blue-200/70 via-purple-300/50 to-transparent rounded-full"
+                className="absolute top-1/2 w-12 h-0.5 bg-gradient-to-r from-red-200/70 via-red-400/50 to-transparent rounded-full"
                 style={{
                   left: "-12px",
                   transform: `translateY(-50%) rotate(${cometAngle + 180}deg)`,
@@ -350,11 +356,11 @@ export default function PhotoGallery() {
               {progress > 10 && (
                 <>
                   <div
-                    className="absolute w-1 h-1 bg-blue-300 rounded-full animate-pulse"
+                    className="absolute w-1 h-1 bg-red-300 rounded-full animate-pulse"
                     style={{ left: "-8px", top: "4px" }}
                   ></div>
                   <div
-                    className="absolute w-0.5 h-0.5 bg-purple-300 rounded-full animate-pulse"
+                    className="absolute w-0.5 h-0.5 bg-red-400 rounded-full animate-pulse"
                     style={{ left: "-12px", top: "8px", animationDelay: "0.5s" }}
                   ></div>
                   <div
@@ -369,7 +375,7 @@ export default function PhotoGallery() {
           {/* Progress Indicator */}
           <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
             <div className="text-3xl font-light text-white mb-2">{Math.round(progress)}%</div>
-            <div className="text-slate-400 text-sm">
+            <div className="text-gray-400 text-sm">
               {progress < 25 && "Keep turning..."}
               {progress >= 25 && progress < 50 && "Getting there..."}
               {progress >= 50 && progress < 75 && "Almost halfway..."}
@@ -390,18 +396,18 @@ export default function PhotoGallery() {
 
     return (
       <div className="space-y-8">
-        {/* Header with Back Button - IMPROVED CONTRAST */}
+        {/* Header with Back Button */}
         <div className="flex items-center justify-between">
           <Button
             onClick={handleBackToCategories}
-            className="bg-slate-700 hover:bg-slate-600 text-white border-none shadow-md"
+            className="bg-gray-700 hover:bg-gray-600 text-white border-none shadow-md"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
           <div className="text-center">
             <h3 className="text-2xl font-light text-white">{category?.name}</h3>
-            <p className="text-slate-400 text-sm">{photos.length} items</p>
+            <p className="text-gray-400 text-sm">{photos.length} items</p>
           </div>
           <div className="w-20"></div> {/* Spacer for centering */}
         </div>
@@ -411,7 +417,7 @@ export default function PhotoGallery() {
           {photos.map((photo) => (
             <div
               key={photo.id}
-              className="group relative bg-slate-900/30 border border-slate-700/50 rounded-lg overflow-hidden hover:border-slate-500 transition-all duration-300 cursor-pointer backdrop-blur-sm"
+              className="group relative bg-black/30 border border-gray-700/50 rounded-lg overflow-hidden hover:border-red-500/50 transition-all duration-300 cursor-pointer backdrop-blur-sm"
               onClick={() => setSelectedPhoto(photo)}
             >
               <div className="aspect-[4/3] overflow-hidden">
@@ -425,6 +431,12 @@ export default function PhotoGallery() {
                   }}
                 />
               </div>
+
+              {/* Format Badge */}
+              <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">
+                {getFileExtension(photo.src)}
+              </div>
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                 <h3 className="font-light text-lg">{photo.title}</h3>
@@ -450,7 +462,7 @@ export default function PhotoGallery() {
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
                 <h3 className="text-xl font-light text-white mb-2">{selectedPhoto.title}</h3>
-                <p className="text-slate-300 text-sm capitalize">{selectedCategory}</p>
+                <p className="text-gray-300 text-sm capitalize">{selectedCategory}</p>
               </div>
               <button
                 onClick={(e) => {

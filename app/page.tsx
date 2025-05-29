@@ -1,12 +1,14 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Rocket, Camera, Globe, Gamepad2 } from "lucide-react"
+import { Camera, Globe, Gamepad2 } from "lucide-react"
 import SnakeGame from "./components/snake-game"
 import PhotoGallery from "./components/photo-gallery"
 
 export default function Home() {
+  const [scrollY, setScrollY] = useState(0)
+
   // Function to handle navigation
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id)
@@ -30,81 +32,96 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden relative">
-      {/* Animated Starfield Background */}
-      <div className="absolute inset-0">
-        {/* Stars Layer 1 */}
-        <div className="absolute inset-0 animate-pulse">
+      {/* Comet Background Layer - Behind everything */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        {/* Subtle comets in the far background */}
+        {Array.from({ length: 2 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-0.5 h-12 bg-gradient-to-b from-transparent via-white/30 to-transparent rounded-full opacity-20"
+            style={{
+              left: `${20 + Math.random() * 60}%`,
+              top: `${Math.random() * 100}%`,
+              transform: `rotate(45deg)`,
+              animation: `comet-streak ${10 + Math.random() * 8}s linear infinite ${Math.random() * 12}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Static Starfield - No Movement */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        {/* Stars Layer 1 - Completely static */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+          }}
+        >
           {Array.from({ length: 100 }).map((_, i) => (
             <div
-              key={i}
-              className="absolute w-1 h-1 bg-white rounded-full opacity-70"
+              key={`star1-${i}`}
+              className="absolute rounded-full"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
+                width: Math.random() > 0.95 ? "2px" : "1px",
+                height: Math.random() > 0.95 ? "2px" : "1px",
+                backgroundColor: Math.random() > 0.9 ? "#ff8080" : "#ffffff",
+                opacity: 0.2 + Math.random() * 0.8,
               }}
             />
           ))}
         </div>
 
-        {/* Stars Layer 2 - Twinkling */}
-        <div className="absolute inset-0">
+        {/* Stars Layer 2 - Completely static */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+          }}
+        >
           {Array.from({ length: 50 }).map((_, i) => (
             <div
-              key={i}
-              className="absolute w-0.5 h-0.5 bg-blue-200 rounded-full animate-ping"
+              key={`star2-${i}`}
+              className="absolute rounded-full"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 4}s`,
-                animationDuration: `${2 + Math.random() * 3}s`,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Floating Particles */}
-        <div className="absolute inset-0">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-2 h-2 bg-purple-400 rounded-full opacity-30 animate-bounce"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${3 + Math.random() * 4}s`,
+                width: Math.random() > 0.9 ? "1px" : "0.5px",
+                height: Math.random() > 0.9 ? "1px" : "0.5px",
+                backgroundColor: Math.random() > 0.8 ? "#ff6060" : "#ffffff",
+                opacity: 0.2 + Math.random() * 0.6,
               }}
             />
           ))}
         </div>
       </div>
 
-      {/* Header */}
-      <header className="fixed w-full z-50 backdrop-blur-md bg-black/50 border-b border-purple-500/30">
+      {/* Header - No rocket icon */}
+      <header className="fixed w-full z-50 backdrop-blur-md bg-black/50 border-b border-red-500/30">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Rocket className="h-6 w-6 text-purple-400 animate-pulse" />
-            <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+            <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-white to-red-400">
               DUMA
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <button
               onClick={() => scrollToSection("game")}
-              className="text-sm text-slate-300 hover:text-purple-400 transition-colors"
+              className="text-sm text-gray-300 hover:text-red-400 transition-colors"
             >
               Game
             </button>
             <button
               onClick={() => scrollToSection("gallery")}
-              className="text-sm text-slate-300 hover:text-purple-400 transition-colors"
+              className="text-sm text-gray-300 hover:text-red-400 transition-colors"
             >
               Gallery
             </button>
             <button
               onClick={() => scrollToSection("contact")}
-              className="text-sm text-slate-300 hover:text-purple-400 transition-colors"
+              className="text-sm text-gray-300 hover:text-red-400 transition-colors"
             >
               Contact
             </button>
@@ -113,9 +130,9 @@ export default function Home() {
       </header>
 
       {/* Main Planet and Rings Section */}
-      <section className="min-h-screen flex items-center justify-center relative pt-20">
+      <section className="min-h-screen flex items-center justify-center relative pt-20 z-10">
         <div className="relative w-96 h-96 md:w-[500px] md:h-[500px]">
-          {/* Central Planet with Enhanced Textures */}
+          {/* Central Planet with Enhanced Textures - KEEP THE SAME */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-blue-600 via-purple-700 to-indigo-800 shadow-2xl shadow-purple-500/50 animate-pulse">
             {/* Planet Base Layer */}
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/40 to-purple-600/60"></div>
@@ -152,8 +169,8 @@ export default function Home() {
           {/* Ring 1 - Game Button (Closest orbit) */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-80 md:h-80 pointer-events-none">
             {/* Ring Visual */}
-            <div className="absolute inset-0 border border-purple-400/40 rounded-full"></div>
-            <div className="absolute inset-1 border border-purple-300/20 rounded-full"></div>
+            <div className="absolute inset-0 border border-red-400/40 rounded-full"></div>
+            <div className="absolute inset-1 border border-red-300/20 rounded-full"></div>
 
             {/* Orbiting Button Container */}
             <div className="absolute inset-0 animate-spin-slow">
@@ -163,7 +180,7 @@ export default function Home() {
                 <div className="animate-reverse-spin-slow">
                   <Button
                     onClick={() => scrollToSection("game")}
-                    className="relative bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 border border-purple-400 shadow-lg shadow-purple-500/50 group cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-purple-500/70 active:scale-95"
+                    className="relative bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 border border-red-400 shadow-lg shadow-red-500/50 group cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-red-500/70 active:scale-95"
                   >
                     <Gamepad2 className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
                     Game
@@ -174,18 +191,18 @@ export default function Home() {
 
             {/* Ring Particles */}
             <div className="absolute inset-0 animate-spin-slow">
-              <div className="absolute top-0 left-1/4 w-1 h-1 bg-purple-400 rounded-full"></div>
-              <div className="absolute bottom-0 right-1/3 w-0.5 h-0.5 bg-purple-300 rounded-full"></div>
-              <div className="absolute top-1/2 right-0 w-1 h-1 bg-purple-500 rounded-full"></div>
-              <div className="absolute top-1/2 left-0 w-0.5 h-0.5 bg-purple-400 rounded-full"></div>
+              <div className="absolute top-0 left-1/4 w-1 h-1 bg-red-400 rounded-full"></div>
+              <div className="absolute bottom-0 right-1/3 w-0.5 h-0.5 bg-red-300 rounded-full"></div>
+              <div className="absolute top-1/2 right-0 w-1 h-1 bg-red-500 rounded-full"></div>
+              <div className="absolute top-1/2 left-0 w-0.5 h-0.5 bg-red-400 rounded-full"></div>
             </div>
           </div>
 
           {/* Ring 2 - Gallery Button (Middle orbit) */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-96 md:h-96 pointer-events-none">
             {/* Ring Visual */}
-            <div className="absolute inset-0 border border-blue-400/40 rounded-full"></div>
-            <div className="absolute inset-2 border border-blue-300/20 rounded-full"></div>
+            <div className="absolute inset-0 border border-white/40 rounded-full"></div>
+            <div className="absolute inset-2 border border-white/20 rounded-full"></div>
 
             {/* Orbiting Button Container */}
             <div className="absolute inset-0 animate-spin-reverse-slow">
@@ -195,7 +212,7 @@ export default function Home() {
                 <div className="animate-spin-slow">
                   <Button
                     onClick={() => scrollToSection("gallery")}
-                    className="relative bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 border border-blue-400 shadow-lg shadow-blue-500/50 group cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-blue-500/70 active:scale-95"
+                    className="relative bg-gradient-to-r from-gray-600 to-gray-800 hover:from-gray-500 hover:to-gray-700 border border-white/40 shadow-lg shadow-white/20 group cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-white/30 active:scale-95"
                   >
                     <Camera className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
                     Gallery
@@ -206,18 +223,18 @@ export default function Home() {
 
             {/* Ring Particles */}
             <div className="absolute inset-0 animate-spin-reverse-slow">
-              <div className="absolute top-1/4 left-0 w-1 h-1 bg-blue-400 rounded-full"></div>
-              <div className="absolute bottom-1/4 right-0 w-0.5 h-0.5 bg-blue-300 rounded-full"></div>
-              <div className="absolute bottom-0 left-1/3 w-1 h-1 bg-blue-500 rounded-full"></div>
-              <div className="absolute top-0 right-1/4 w-0.5 h-0.5 bg-blue-400 rounded-full"></div>
+              <div className="absolute top-1/4 left-0 w-1 h-1 bg-white/60 rounded-full"></div>
+              <div className="absolute bottom-1/4 right-0 w-0.5 h-0.5 bg-white/40 rounded-full"></div>
+              <div className="absolute bottom-0 left-1/3 w-1 h-1 bg-white/70 rounded-full"></div>
+              <div className="absolute top-0 right-1/4 w-0.5 h-0.5 bg-white/50 rounded-full"></div>
             </div>
           </div>
 
           {/* Ring 3 - Contact Button (Outer orbit) */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 md:w-[450px] md:h-[450px] pointer-events-none">
             {/* Ring Visual */}
-            <div className="absolute inset-0 border border-pink-400/40 rounded-full"></div>
-            <div className="absolute inset-3 border border-pink-300/20 rounded-full"></div>
+            <div className="absolute inset-0 border border-red-400/40 rounded-full"></div>
+            <div className="absolute inset-3 border border-red-300/20 rounded-full"></div>
 
             {/* Orbiting Button Container */}
             <div className="absolute inset-0 animate-spin-slow">
@@ -227,7 +244,7 @@ export default function Home() {
                 <div className="animate-reverse-spin-slow">
                   <Button
                     onClick={() => scrollToSection("contact")}
-                    className="relative bg-gradient-to-r from-pink-600 to-pink-800 hover:from-pink-500 hover:to-pink-700 border border-pink-400 shadow-lg shadow-pink-500/50 group cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-pink-500/70 active:scale-95"
+                    className="relative bg-gradient-to-r from-red-800 to-red-900 hover:from-red-700 hover:to-red-800 border border-red-400 shadow-lg shadow-red-500/50 group cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-red-500/70 active:scale-95"
                   >
                     <Globe className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
                     Contact
@@ -238,11 +255,11 @@ export default function Home() {
 
             {/* Ring Particles */}
             <div className="absolute inset-0 animate-spin-slow">
-              <div className="absolute top-1/3 left-0 w-1 h-1 bg-pink-400 rounded-full"></div>
-              <div className="absolute bottom-1/3 right-0 w-0.5 h-0.5 bg-pink-300 rounded-full"></div>
-              <div className="absolute top-0 left-1/2 w-1 h-1 bg-pink-500 rounded-full"></div>
-              <div className="absolute bottom-0 right-1/3 w-0.5 h-0.5 bg-pink-400 rounded-full"></div>
-              <div className="absolute top-2/3 left-1/4 w-0.5 h-0.5 bg-pink-300 rounded-full"></div>
+              <div className="absolute top-1/3 left-0 w-1 h-1 bg-red-400 rounded-full"></div>
+              <div className="absolute bottom-1/3 right-0 w-0.5 h-0.5 bg-red-300 rounded-full"></div>
+              <div className="absolute top-0 left-1/2 w-1 h-1 bg-red-500 rounded-full"></div>
+              <div className="absolute bottom-0 right-1/3 w-0.5 h-0.5 bg-red-400 rounded-full"></div>
+              <div className="absolute top-2/3 left-1/4 w-0.5 h-0.5 bg-red-300 rounded-full"></div>
             </div>
           </div>
 
@@ -262,36 +279,36 @@ export default function Home() {
           </div>
 
           {/* Orbital Trails */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-80 md:h-80 border border-purple-400/20 rounded-full animate-pulse pointer-events-none"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-80 md:h-80 border border-red-400/20 rounded-full animate-pulse pointer-events-none"></div>
           <div
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-96 md:h-96 border border-blue-400/20 rounded-full animate-pulse pointer-events-none"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-96 md:h-96 border border-white/20 rounded-full animate-pulse pointer-events-none"
             style={{ animationDelay: "1s" }}
           ></div>
           <div
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 md:w-[450px] md:h-[450px] border border-pink-400/20 rounded-full animate-pulse pointer-events-none"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 md:w-[450px] md:h-[450px] border border-red-400/20 rounded-full animate-pulse pointer-events-none"
             style={{ animationDelay: "2s" }}
           ></div>
         </div>
 
         {/* Title and Description */}
         <div className="absolute top-32 left-1/2 transform -translate-x-1/2 text-center z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-red-400 to-red-600">
             Welcome to DUMA
           </h1>
-          <p className="text-slate-300 max-w-md mx-auto">
+          <p className="text-gray-300 max-w-md mx-auto">
             Explore our interactive platform with games, galleries, and more
           </p>
         </div>
       </section>
 
       {/* Game Section */}
-      <section id="game" className="py-20 px-4 relative scroll-mt-20">
+      <section id="game" className="py-20 px-4 relative scroll-mt-20 z-10">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-red-400">
               Snake Game
             </h2>
-            <p className="text-slate-300 max-w-2xl mx-auto">
+            <p className="text-gray-300 max-w-2xl mx-auto">
               Navigate your snake and collect energy orbs to grow and increase your score!
             </p>
           </div>
@@ -301,13 +318,13 @@ export default function Home() {
       </section>
 
       {/* Gallery Section */}
-      <section id="gallery" className="py-20 px-4 relative scroll-mt-20">
+      <section id="gallery" className="py-20 px-4 relative scroll-mt-20 z-10">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-white">
               Photo Gallery
             </h2>
-            <p className="text-slate-300 max-w-2xl mx-auto">
+            <p className="text-gray-300 max-w-2xl mx-auto">
               Browse through our collection of photos organized by categories.
             </p>
           </div>
@@ -317,50 +334,48 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 px-4 relative scroll-mt-20">
+      <section id="contact" className="py-20 px-4 relative scroll-mt-20 z-10">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-white">
               Contact
             </h2>
-            <p className="text-slate-300 max-w-2xl mx-auto">
-              Get in touch with us for any inquiries or collaborations.
-            </p>
+            <p className="text-gray-300 max-w-2xl mx-auto">Get in touch with us for any inquiries or collaborations.</p>
           </div>
 
-          <div className="max-w-md mx-auto bg-slate-900/50 border border-pink-500/30 rounded-xl p-6 backdrop-blur-sm">
+          <div className="max-w-md mx-auto bg-black/50 border border-red-500/30 rounded-xl p-6 backdrop-blur-sm">
             <form className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-1">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
                   Name
                 </label>
                 <input
                   type="text"
                   id="name"
-                  className="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 backdrop-blur-sm"
+                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 backdrop-blur-sm text-white"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
                   Email
                 </label>
                 <input
                   type="email"
                   id="email"
-                  className="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 backdrop-blur-sm"
+                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 backdrop-blur-sm text-white"
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-1">
+                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">
                   Message
                 </label>
                 <textarea
                   id="message"
                   rows={4}
-                  className="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 backdrop-blur-sm"
+                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 backdrop-blur-sm text-white"
                 ></textarea>
               </div>
-              <Button className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500">
+              <Button className="w-full bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700">
                 Send Message
               </Button>
             </form>
@@ -369,16 +384,15 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-purple-500/30 relative">
+      <footer className="py-8 px-4 border-t border-red-500/30 relative z-10">
         <div className="container mx-auto max-w-5xl">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center gap-2 mb-4 md:mb-0">
-              <Rocket className="h-5 w-5 text-purple-400" />
-              <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+              <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-red-400">
                 DUMA
               </span>
             </div>
-            <div className="text-center text-sm text-slate-500">
+            <div className="text-center text-sm text-gray-500">
               © {new Date().getFullYear()} DUMA. All rights reserved.
             </div>
           </div>
