@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Camera, Globe, Gamepad2 } from "lucide-react"
+import { Camera, Globe, Gamepad2, ExternalLink } from "lucide-react"
 import SnakeGame from "./components/snake-game"
 import PhotoGallery from "./components/photo-gallery"
+import PasswordProtectedLinks from "./components/password-protected-links"
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0)
@@ -120,6 +121,12 @@ export default function Home() {
               Gallery
             </button>
             <button
+              onClick={() => scrollToSection("links")}
+              className="text-sm text-gray-300 hover:text-red-400 transition-colors"
+            >
+              Links
+            </button>
+            <button
               onClick={() => scrollToSection("contact")}
               className="text-sm text-gray-300 hover:text-red-400 transition-colors"
             >
@@ -230,8 +237,40 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Ring 3 - Contact Button (Outer orbit) */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 md:w-[450px] md:h-[450px] pointer-events-none">
+          {/* Ring 3 - Links Button (New ring) */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-88 h-88 md:w-[420px] md:h-[420px] pointer-events-none">
+            {/* Ring Visual */}
+            <div className="absolute inset-0 border border-red-300/40 rounded-full"></div>
+            <div className="absolute inset-2 border border-red-200/20 rounded-full"></div>
+
+            {/* Orbiting Button Container */}
+            <div className="absolute inset-0 animate-spin-reverse-slow">
+              {/* Button positioned at left of ring */}
+              <div className="absolute top-1/2 -left-8 transform -translate-y-1/2 pointer-events-auto">
+                {/* Counter-rotation to keep button upright */}
+                <div className="animate-spin-slow">
+                  <Button
+                    onClick={() => scrollToSection("links")}
+                    className="relative bg-gradient-to-r from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 border border-red-400 shadow-lg shadow-red-500/50 group cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-red-500/70 active:scale-95"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
+                    Links
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Ring Particles */}
+            <div className="absolute inset-0 animate-spin-reverse-slow">
+              <div className="absolute top-1/4 left-0 w-1 h-1 bg-red-400 rounded-full"></div>
+              <div className="absolute bottom-1/4 right-0 w-0.5 h-0.5 bg-red-300 rounded-full"></div>
+              <div className="absolute bottom-0 left-1/3 w-1 h-1 bg-red-500 rounded-full"></div>
+              <div className="absolute top-0 right-1/4 w-0.5 h-0.5 bg-red-400 rounded-full"></div>
+            </div>
+          </div>
+
+          {/* Ring 4 - Contact Button (Outer orbit) */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 md:w-[480px] md:h-[480px] pointer-events-none">
             {/* Ring Visual */}
             <div className="absolute inset-0 border border-red-400/40 rounded-full"></div>
             <div className="absolute inset-3 border border-red-300/20 rounded-full"></div>
@@ -264,7 +303,7 @@ export default function Home() {
           </div>
 
           {/* Outer Asteroid Belt */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] md:w-[550px] md:h-[550px] pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] md:w-[580px] md:h-[580px] pointer-events-none">
             <div className="absolute inset-0 border border-white/10 rounded-full animate-spin-reverse-slow">
               {/* Asteroids */}
               <div className="absolute -top-0.5 left-1/6 w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
@@ -285,7 +324,11 @@ export default function Home() {
             style={{ animationDelay: "1s" }}
           ></div>
           <div
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 md:w-[450px] md:h-[450px] border border-red-400/20 rounded-full animate-pulse pointer-events-none"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-88 h-88 md:w-[420px] md:h-[420px] border border-red-300/20 rounded-full animate-pulse pointer-events-none"
+            style={{ animationDelay: "1.5s" }}
+          ></div>
+          <div
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 md:w-[480px] md:h-[480px] border border-red-400/20 rounded-full animate-pulse pointer-events-none"
             style={{ animationDelay: "2s" }}
           ></div>
         </div>
@@ -330,6 +373,22 @@ export default function Home() {
           </div>
 
           <PhotoGallery />
+        </div>
+      </section>
+
+      {/* Links Section - Pssst */}
+      <section id="links" className="py-20 px-4 relative scroll-mt-20 z-10">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-white">
+              Links
+            </h2>
+            <p className="text-gray-300 max-w-2xl mx-auto">
+              Access our curated collection of useful links and resources.
+            </p>
+          </div>
+
+          <PasswordProtectedLinks />
         </div>
       </section>
 
